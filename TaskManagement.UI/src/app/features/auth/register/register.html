@@ -1,0 +1,125 @@
+<div class="container-fluid vh-100 bg-light">
+  <div class="row h-100 justify-content-center align-items-center">
+    <div class="col-md-4">
+      <div class="card shadow">
+        <div class="card-body p-4">
+
+          <h3 class="text-center mb-4">
+            Create Account
+          </h3>
+
+          @if (errorMessage) {
+            <div class="alert alert-danger text-center" role="alert">
+              {{ errorMessage }}
+            </div>
+          }
+
+          @if (successMessage) {
+            <div class="alert alert-success text-center" role="alert">
+              {{ successMessage }}
+            </div>
+          }
+
+          <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+
+            <!-- Name Field -->
+            <div class="mb-3">
+              <label class="form-label">Full Name</label>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="name"
+                [class.is-invalid]="isSubmitted && registerForm.get('name')?.invalid">
+
+              @if (isSubmitted && registerForm.get('name')?.hasError('required')) {
+                <small class="text-danger d-block mt-1">
+                  Name is required.
+                </small>
+              }
+            </div>
+
+            <!-- Email Field -->
+            <div class="mb-3">
+              <label class="form-label">Email</label>
+              <input
+                type="email"
+                class="form-control"
+                formControlName="email"
+                [class.is-invalid]="isSubmitted && registerForm.get('email')?.invalid">
+
+              @if (isSubmitted && registerForm.get('email')?.hasError('required')) {
+                <small class="text-danger d-block mt-1">
+                  Email is required.
+                </small>
+              }
+
+              @if (isSubmitted && registerForm.get('email')?.hasError('email')) {
+                <small class="text-danger d-block mt-1">
+                  Enter a valid email address.
+                </small>
+              }
+            </div>
+
+            <!-- Password Field -->
+            <div class="mb-3">
+              <label class="form-label">Password</label>
+              <input
+                type="password"
+                class="form-control"
+                formControlName="password"
+                [class.is-invalid]="isSubmitted && registerForm.get('password')?.invalid">
+
+              @if (isSubmitted && registerForm.get('password')?.hasError('required')) {
+                <small class="text-danger d-block mt-1">
+                  Password is required.
+                </small>
+              }
+
+              @if (isSubmitted && registerForm.get('password')?.hasError('minlength')) {
+                <small class="text-danger d-block mt-1">
+                  Password must be at least 6 characters.
+                </small>
+              }
+            </div>
+
+            <!-- Re-enter Password Field -->
+            <div class="mb-4">
+              <label class="form-label">Re-enter Password</label>
+              <input
+                type="password"
+                class="form-control"
+                formControlName="reenterPassword"
+                [class.is-invalid]="isSubmitted && (registerForm.get('reenterPassword')?.invalid || registerForm.hasError('passwordMismatch'))">
+
+              @if (isSubmitted && registerForm.get('reenterPassword')?.hasError('required')) {
+                <small class="text-danger d-block mt-1">
+                  Please re-enter your password.
+                </small>
+              }
+
+              @if (isSubmitted && registerForm.hasError('passwordMismatch') && !registerForm.get('reenterPassword')?.hasError('required')) {
+                <small class="text-danger d-block mt-1">
+                  Passwords do not match.
+                </small>
+              }
+            </div>
+
+            <!-- Submit Button -->
+            <button
+              type="submit"
+              class="btn btn-success w-100 mb-2">
+              Sign Up
+            </button>
+
+            <!-- Link back to Login -->
+            <div class="text-center mt-3">
+              <a routerLink="/login" class="text-decoration-none">Already have an account? Login</a>
+            </div>
+
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

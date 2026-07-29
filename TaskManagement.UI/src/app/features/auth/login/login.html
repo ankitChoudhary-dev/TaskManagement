@@ -1,85 +1,80 @@
 <div class="container-fluid vh-100 bg-light">
+  <div class="row h-100 justify-content-center align-items-center">
+    <div class="col-md-4">
+      <div class="card shadow">
+        <div class="card-body p-4">
 
-    <div class="row h-100 justify-content-center align-items-center">
+          <h3 class="text-center mb-4">
+            Task Management
+          </h3>
 
-        <div class="col-md-4">
+          @if (errorMessage) {
+            <div class="alert alert-danger text-center" role="alert">
+              {{ errorMessage }}
+            </div>
+          }
 
-            <div class="card shadow">
+          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
 
-                <div class="card-body p-4">
+            <!-- Email Field -->
+            <div class="mb-3">
+              <label class="form-label">Email</label>
+              <input
+                type="email"
+                class="form-control"
+                formControlName="email"
+                [class.is-invalid]="isSubmitted && loginForm.get('email')?.invalid">
 
-                    <h3 class="text-center mb-4">
-                        Task Management
-                    </h3>
+              @if (isSubmitted && loginForm.get('email')?.hasError('required')) {
+                <small class="text-danger d-block mt-1">
+                  Email is required.
+                </small>
+              }
 
-                    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-
-                        <div class="mb-3">
-
-                            <label class="form-label">
-                                Email
-                            </label>
-
-                            <input
-                                type="email"
-                                class="form-control"
-                                formControlName="email">
-
-                            @if (isSubmitted && loginForm.controls.email.errors?.['required']) {
-
-                                <small class="text-danger">
-                                    Email is required.
-                                </small>
-
-                            }
-
-                            @if (isSubmitted && loginForm.controls.email.errors?.['email']) {
-
-                                <small class="text-danger">
-                                    Enter a valid email.
-                                </small>
-
-                            }
-
-                        </div>
-
-                        <div class="mb-4">
-
-                            <label class="form-label">
-                                Password
-                            </label>
-
-                            <input
-                                type="password"
-                                class="form-control"
-                                formControlName="password">
-
-                            @if (isSubmitted && loginForm.controls.password.errors?.['required']) {
-
-                                <small class="text-danger">
-                                    Password is required.
-                                </small>
-
-                            }
-
-                        </div>
-
-                        <button
-                            type="submit"
-                            class="btn btn-primary w-100">
-
-                            Login
-
-                        </button>
-
-                    </form>
-
-                </div>
-
+              @if (isSubmitted && loginForm.get('email')?.hasError('email')) {
+                <small class="text-danger d-block mt-1">
+                  Enter a valid email address.
+                </small>
+              }
             </div>
 
+            <!-- Password Field -->
+            <div class="mb-4">
+              <label class="form-label">Password</label>
+              <input
+                type="password"
+                class="form-control"
+                formControlName="password"
+                [class.is-invalid]="isSubmitted && loginForm.get('password')?.invalid">
+
+              @if (isSubmitted && loginForm.get('password')?.hasError('required')) {
+                <small class="text-danger d-block mt-1">
+                  Password is required.
+                </small>
+              }
+            </div>
+
+            <!-- Green Sign Up Button (Appears Above Login Button) -->
+            @if (showSignUpButton) {
+              <button
+                type="button"
+                class="btn btn-success w-100 mb-2"
+                (click)="navigateToSignUp()">
+                Sign Up
+              </button>
+            }
+
+            <!-- Submit Login Button -->
+            <button
+              type="submit"
+              class="btn btn-primary w-100">
+              Login
+            </button>
+
+          </form>
+
         </div>
-
+      </div>
     </div>
-
+  </div>
 </div>
