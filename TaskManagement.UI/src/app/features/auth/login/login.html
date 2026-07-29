@@ -1,1 +1,85 @@
-<p>login works!</p>
+<div class="container-fluid vh-100 bg-light">
+
+    <div class="row h-100 justify-content-center align-items-center">
+
+        <div class="col-md-4">
+
+            <div class="card shadow">
+
+                <div class="card-body p-4">
+
+                    <h3 class="text-center mb-4">
+                        Task Management
+                    </h3>
+
+                    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Email
+                            </label>
+
+                            <input
+                                type="email"
+                                class="form-control"
+                                formControlName="email">
+
+                            @if (isSubmitted && loginForm.controls.email.errors?.['required']) {
+
+                                <small class="text-danger">
+                                    Email is required.
+                                </small>
+
+                            }
+
+                            @if (isSubmitted && loginForm.controls.email.errors?.['email']) {
+
+                                <small class="text-danger">
+                                    Enter a valid email.
+                                </small>
+
+                            }
+
+                        </div>
+
+                        <div class="mb-4">
+
+                            <label class="form-label">
+                                Password
+                            </label>
+
+                            <input
+                                type="password"
+                                class="form-control"
+                                formControlName="password">
+
+                            @if (isSubmitted && loginForm.controls.password.errors?.['required']) {
+
+                                <small class="text-danger">
+                                    Password is required.
+                                </small>
+
+                            }
+
+                        </div>
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary w-100">
+
+                            Login
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
