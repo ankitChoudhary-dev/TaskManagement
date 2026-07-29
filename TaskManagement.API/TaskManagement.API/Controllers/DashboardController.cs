@@ -1,16 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace TaskManagement.API.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class DashboardController : ControllerBase
     {
 
         [HttpGet]
-        public IActionResult GetDashboard()
+        public ActionResult GetDashboard()
         {
-
             return Ok(new
             {
                 totalProjects = 0,
@@ -19,7 +20,6 @@ namespace TaskManagement.API.Controllers
                 inProgressTasks = 0,
                 completedTasks = 0
             });
-
         }
 
     }

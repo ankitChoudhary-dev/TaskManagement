@@ -32,7 +32,12 @@ namespace TaskManagement.API.Services
                     };
                 }
 
-                if (user.PasswordHash != request.Password)
+                var isPasswordValid = BCrypt.Net.BCrypt.Verify(
+                    request.Password,
+                    user.PasswordHash);
+
+
+                if (!isPasswordValid)
                 {
                     return new LoginResponse
                     {
@@ -41,10 +46,12 @@ namespace TaskManagement.API.Services
                     };
                 }
 
+
                 var token = _tokenService.GenerateToken(
                     user.Id,
                     user.Email,
                     user.Role);
+
 
                 return new LoginResponse
                 {
@@ -59,6 +66,7 @@ namespace TaskManagement.API.Services
                 throw;
             }
         }
+
 
         public async Task<LoginResponse> Register(RegisterRequest request)
         {
@@ -75,15 +83,17 @@ namespace TaskManagement.API.Services
                     };
                 }
 
+
                 var newUser = await _authRepository.CreateUser(new User
                 {
                     Name = request.Name,
                     Email = request.Email,
-                    PasswordHash = request.Password,
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
                     Role = "User",
                     IsActive = true,
-                    CreatedOn = DateTime.UtcNow // Set explicitly if you have date properties
+                    CreatedOn = DateTime.UtcNow
                 });
+
 
                 return new LoginResponse
                 {

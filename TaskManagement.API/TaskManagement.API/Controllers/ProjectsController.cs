@@ -1,12 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace TaskManagement.API.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class ProjectsController : ControllerBase
     {
-
         [HttpGet]
         public IActionResult GetProjects()
         {
@@ -17,7 +18,6 @@ namespace TaskManagement.API.Controllers
             });
         }
 
-
         [HttpGet("{id}")]
         public IActionResult GetProject(int id)
         {
@@ -27,7 +27,7 @@ namespace TaskManagement.API.Controllers
             });
         }
 
-
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public IActionResult CreateProject()
         {
@@ -37,7 +37,7 @@ namespace TaskManagement.API.Controllers
             });
         }
 
-
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public IActionResult UpdateProject(int id)
         {
@@ -47,7 +47,7 @@ namespace TaskManagement.API.Controllers
             });
         }
 
-
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public IActionResult DeleteProject(int id)
         {
