@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 
 import { TaskService } from '../services/task.service';
 import { Task } from '../models/task.model';
@@ -8,7 +9,7 @@ import { Task } from '../models/task.model';
 @Component({
   selector: 'app-task-list',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, FormsModule],
   templateUrl: './task-list.html',
   styleUrl: './task-list.css'
 })
@@ -16,6 +17,13 @@ export class TaskList implements OnInit {
 
   tasks: Task[] = [];
   errorMessage: string = '';
+
+  searchTerm: string = '';
+  selectedStatus: string = '';
+  selectedPriority: string = '';
+
+  statusOptions: string[] = ['Pending', 'InProgress', 'Completed'];
+  priorityOptions: string[] = ['Low', 'Medium', 'High'];
 
   sortColumn: keyof Task = 'id';
   sortDirection: 'asc' | 'desc' = 'asc';
@@ -30,9 +38,31 @@ export class TaskList implements OnInit {
   }
 
   loadTasks(): void {
-    this.taskService.getAllTasks().subscribe({
+    this.taskService.getAllTasks(this.searchTerm, this.selectedStatus, this.selectedPriority).subscribe({
       next: (response: Task[]) => {
-        this.tasks = response;
+        let filteredTasks = response;
+
+        if (this.searchTerm.trim()) {
+          const search = this.searchTerm.toLowerCase().trim();
+          filteredTasks = filteredTasks.filter(task =>
+            task.title?.toLowerCase().includes(search) ||
+            task.description?.toLowerCase().includes(search)
+          );
+        }
+
+        if (this.selectedStatus) {
+          filteredTasks = filteredTasks.filter(task =>
+            task.status?.toLowerCase().replace(/\s+/g, '') === this.selectedStatus.toLowerCase().replace(/\s+/g, '')
+          );
+        }
+
+        if (this.selectedPriority) {
+          filteredTasks = filteredTasks.filter(task =>
+            task.priority?.toLowerCase() === this.selectedPriority.toLowerCase()
+          );
+        }
+
+        this.tasks = filteredTasks;
         this.sortTasks();
         this.cdr.markForCheck();
       },
@@ -42,6 +72,17 @@ export class TaskList implements OnInit {
         this.cdr.markForCheck();
       }
     });
+  }
+
+  onFilterChange(): void {
+    this.loadTasks();
+  }
+
+  clearFilters(): void {
+    this.searchTerm = '';
+    this.selectedStatus = '';
+    this.selectedPriority = '';
+    this.loadTasks();
   }
 
   deleteTask(id: number): void {
@@ -58,9 +99,9 @@ export class TaskList implements OnInit {
       error: (error: any) => {
         console.error('Delete Task Error:', error);
         if (error?.status === 403) {
-          this.errorMessage = 'You are not authorized to delete a task.';
+          this.errorMessage = '<strong>Access Denied:</strong> You are not authorized to delete this task.';
         } else {
-          this.errorMessage = 'Unable to delete task.';
+          this.errorMessage = '<strong>Error:</strong> Unable to delete task.';
         }
         this.cdr.markForCheck();
       }
@@ -97,6 +138,7 @@ export class TaskList implements OnInit {
   getStatusClass(status: string): string {
     switch (status?.toLowerCase()) {
       case 'completed': return 'bg-success';
+      case 'inprogress':
       case 'in progress': return 'bg-primary';
       case 'pending': return 'bg-warning text-dark';
       default: return 'bg-secondary';

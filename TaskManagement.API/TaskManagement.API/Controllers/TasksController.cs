@@ -8,7 +8,7 @@ namespace TaskManagement.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize] // Requires valid JWT token for all task endpoints
+    [Authorize]
     public class TasksController : ControllerBase
     {
         private readonly ITaskService _taskService;
@@ -18,7 +18,6 @@ namespace TaskManagement.API.Controllers
             _taskService = taskService;
         }
 
-        // GET: api/tasks?title=x&status=Pending&priority=High&projectId=1&assignedTo=2
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] TaskFilterDto filter)
         {
@@ -26,7 +25,6 @@ namespace TaskManagement.API.Controllers
             return Ok(tasks);
         }
 
-        // GET: api/tasks/5
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -37,14 +35,13 @@ namespace TaskManagement.API.Controllers
             return Ok(task);
         }
 
-        // POST: api/tasks
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([FromBody] CreateTaskDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            // Extract logged-in User ID from JWT Claim
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
                               ?? User.FindFirst("id")?.Value;
 
@@ -54,8 +51,8 @@ namespace TaskManagement.API.Controllers
             return CreatedAtAction(nameof(GetById), new { id = createdTask.Id }, createdTask);
         }
 
-        // PUT: api/tasks/5
         [HttpPut("{id:int}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateTaskDto dto)
         {
             if (!ModelState.IsValid)
@@ -68,8 +65,8 @@ namespace TaskManagement.API.Controllers
             return Ok(updatedTask);
         }
 
-        // DELETE: api/tasks/5
         [HttpDelete("{id:int}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             var success = await _taskService.DeleteTaskAsync(id);

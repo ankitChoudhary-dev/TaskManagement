@@ -21,7 +21,6 @@ builder.Services.AddControllers();
 
 builder.Services.AddApplicationServices(builder.Configuration);
 
-// JWT Authentication
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -85,7 +84,6 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
-// Global Exception Handling Middleware (Placed at the top of pipeline)
 app.UseMiddleware<ExceptionMiddleware>();
 
 if (app.Environment.IsDevelopment())
@@ -98,10 +96,8 @@ app.UseHttpsRedirection();
 
 app.UseCors("AngularPolicy");
 
-// Authentication middleware
 app.UseAuthentication();
 
-// Authorization middleware
 app.UseAuthorization();
 
 app.MapControllers();

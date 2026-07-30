@@ -23,12 +23,14 @@ namespace TaskManagement.API
             services.AddScoped<IProjectRepository, ProjectRepository>();
             services.AddScoped<ITaskRepository, TaskRepository>();
             services.AddScoped<IDashboardRepository, DashboardRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
 
             // Services
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IProjectService, ProjectService>();
             services.AddScoped<ITaskService, TaskService>();
             services.AddScoped<IDashboardService, DashboardService>();
+            services.AddScoped<IUserService, UserService>();
 
             // Other Services
             services.AddScoped<ITokenService, TokenService>();
