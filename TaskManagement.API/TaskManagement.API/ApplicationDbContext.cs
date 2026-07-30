@@ -3,23 +3,37 @@ using TaskManagement.API.Models;
 
 namespace TaskManagement.API
 {
+    /// <summary>
+    /// Represents the application's database context and manages entity mappings.
+    /// </summary>
     public class ApplicationDbContext : DbContext
     {
+        /// <summary>
+        /// Initializes a new instance of the ApplicationDbContext class.
+        /// </summary>
+        /// <param name="options">The database context configuration options.</param>
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
         }
 
         public DbSet<User> Users { get; set; }
+
         public DbSet<Project> Projects { get; set; }
+
         public DbSet<TaskItem> Tasks { get; set; }
 
+        /// <summary>
+        /// Configures entity relationships and database mappings.
+        /// </summary>
+        /// <param name="modelBuilder">Provides a builder for constructing the EF Core model.</param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
             // Table Mapping (Matches SQL Table Names)
-            modelBuilder.Entity<TaskItem>().ToTable("Tasks");
+            modelBuilder.Entity<TaskItem>()
+                .ToTable("Tasks");
 
             // Project - User Relationship
             modelBuilder.Entity<Project>()

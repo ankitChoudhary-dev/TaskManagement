@@ -1,24 +1,36 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TaskManagement.API.DTOModels.Auth;
 using TaskManagement.API.Models;
 using TaskManagement.API.Services.Interfaces;
-using TaskManagement.API.DTOModels.Auth;
 
 namespace TaskManagement.API.Controllers
 {
+    /// <summary>
+    /// Handles user authentication, registration, and session management endpoints.
+    /// </summary>
     [ApiController]
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AuthController"/> class.
+        /// </summary>
+        /// <param name="authService">Service interface for authentication processing.</param>
         public AuthController(IAuthService authService)
         {
             _authService = authService;
         }
 
+        /// <summary>
+        /// Authenticates user credentials and returns an access token upon successful login.
+        /// </summary>
+        /// <param name="request">Contains the user's login payload including email and password.</param>
+        /// <returns>An HTTP response with user authentication details or error message.</returns>
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequestDTO request)
-        {   
+        {
             if (string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.Password))
             {
                 return BadRequest(new { message = "Email and password are required." });
@@ -48,6 +60,11 @@ namespace TaskManagement.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Registers a new user account with the provided registration details.
+        /// </summary>
+        /// <param name="request">Contains the registration payload with email and credentials.</param>
+        /// <returns>An HTTP response confirming account creation or detailed error response.</returns>
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequestDTO request)
         {

@@ -6,8 +6,17 @@ using TaskManagement.API.Services.Interfaces;
 
 namespace TaskManagement.API
 {
+    /// <summary>
+    /// Provides extension methods for registering application dependencies.
+    /// </summary>
     public static class DependencyInjectionContainer
     {
+        /// <summary>
+        /// Registers database context, repositories, and application services into the dependency injection container.
+        /// </summary>
+        /// <param name="services">The service collection used for dependency registration.</param>
+        /// <param name="configuration">Application configuration containing database settings.</param>
+        /// <returns>The updated service collection.</returns>
         public static IServiceCollection AddApplicationServices(
             this IServiceCollection services,
             IConfiguration configuration)
