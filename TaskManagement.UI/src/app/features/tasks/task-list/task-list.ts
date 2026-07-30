@@ -22,7 +22,7 @@ export class TaskList implements OnInit {
   selectedStatus: string = '';
   selectedPriority: string = '';
 
-  statusOptions: string[] = ['Pending', 'InProgress', 'Completed'];
+  statusOptions: string[] = ['Pending', 'In Progress', 'Completed'];
   priorityOptions: string[] = ['Low', 'Medium', 'High'];
 
   sortColumn: keyof Task = 'id';
