@@ -1,5 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using TaskManagement.API.Models;
+using TaskManagement.API.Services.Interfaces;
+using TaskManagement.API.DTOModels.Project;
 
 namespace TaskManagement.API.Controllers
 {
@@ -8,54 +12,216 @@ namespace TaskManagement.API.Controllers
     [Route("api/[controller]")]
     public class ProjectsController : ControllerBase
     {
+        private readonly IProjectService _projectService;
+
+
+        public ProjectsController(IProjectService projectService)
+        {
+            _projectService = projectService;
+        }
+
+
+
+        // GET: api/Projects
         [HttpGet]
-        public IActionResult GetProjects()
+        public async Task<IActionResult> GetProjects()
         {
-            return Ok(new
+            try
             {
-                message = "Get all projects endpoint working",
-                data = new List<object>()
-            });
+                var projects = await _projectService.GetAllProjects();
+
+                return Ok(projects);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new
+                {
+                    message = "An internal server error occurred. Please try again later."
+                });
+            }
         }
 
+
+
+        // GET: api/Projects/{id}
         [HttpGet("{id}")]
-        public IActionResult GetProject(int id)
+        public async Task<IActionResult> GetProject(int id)
         {
-            return Ok(new
+            try
             {
-                message = $"Get project {id} endpoint working"
-            });
+                var project =
+                    await _projectService.GetProjectById(id);
+
+
+                if (project == null)
+                {
+                    return NotFound(new
+                    {
+                        message = "Project not found."
+                    });
+                }
+
+
+                return Ok(project);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new
+                {
+                    message = "An internal server error occurred. Please try again later."
+                });
+            }
         }
 
+
+
+        // POST: api/Projects
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public IActionResult CreateProject()
+        public async Task<IActionResult> CreateProject(
+            [FromBody] CreateProjectDTO request)
         {
-            return Ok(new
+            try
             {
-                message = "Create project endpoint working"
-            });
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(new
+                    {
+                        message = "Validation failed.",
+                        errors = ModelState
+                            .Where(x => x.Value!.Errors.Count > 0)
+                            .ToDictionary(
+                                x => x.Key,
+                                x => x.Value!.Errors
+                                    .Select(e => e.ErrorMessage)
+                                    .ToArray()
+                            )
+                    });
+                }
+
+
+                var userId =
+                    User.FindFirstValue(
+                        ClaimTypes.NameIdentifier);
+
+
+                if (string.IsNullOrWhiteSpace(userId))
+                {
+                    return Unauthorized(new
+                    {
+                        message = "Invalid token."
+                    });
+                }
+
+
+                var createdBy = int.Parse(userId);
+
+
+                var project =
+                    await _projectService.CreateProject(
+                        request,
+                        createdBy);
+
+
+                return Ok(project);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new
+                {
+                    message = "An internal server error occurred. Please try again later."
+                });
+            }
         }
 
+
+
+        // PUT: api/Projects/{id}
         [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
-        public IActionResult UpdateProject(int id)
+        public async Task<IActionResult> UpdateProject(
+            int id,
+            [FromBody] UpdateProjectDTO request)
         {
-            return Ok(new
+            try
             {
-                message = $"Update project {id} endpoint working"
-            });
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(new
+                    {
+                        message = "Validation failed.",
+                        errors = ModelState
+                            .Where(x => x.Value!.Errors.Count > 0)
+                            .ToDictionary(
+                                x => x.Key,
+                                x => x.Value!.Errors
+                                    .Select(e => e.ErrorMessage)
+                                    .ToArray()
+                            )
+                    });
+                }
+
+
+                var project =
+                    await _projectService.UpdateProject(
+                        id,
+                        request);
+
+
+                if (project == null)
+                {
+                    return NotFound(new
+                    {
+                        message = "Project not found."
+                    });
+                }
+
+
+                return Ok(project);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new
+                {
+                    message = "An internal server error occurred. Please try again later."
+                });
+            }
         }
 
+
+
+        // DELETE: api/Projects/{id}
         [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
-        public IActionResult DeleteProject(int id)
+        public async Task<IActionResult> DeleteProject(int id)
         {
-            return Ok(new
+            try
             {
-                message = $"Delete project {id} endpoint working"
-            });
-        }
+                var deleted =
+                    await _projectService.DeleteProject(id);
 
+
+                if (!deleted)
+                {
+                    return NotFound(new
+                    {
+                        message = "Project not found."
+                    });
+                }
+
+
+                return Ok(new
+                {
+                    message = "Project deleted successfully."
+                });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new
+                {
+                    message = "An internal server error occurred. Please try again later."
+                });
+            }
+        }
     }
 }

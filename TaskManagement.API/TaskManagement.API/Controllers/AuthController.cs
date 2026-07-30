@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TaskManagement.API.Models;
 using TaskManagement.API.Services.Interfaces;
+using TaskManagement.API.DTOModels.Auth;
 
 namespace TaskManagement.API.Controllers
 {
@@ -16,8 +17,8 @@ namespace TaskManagement.API.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequest request)
-        {
+        public async Task<IActionResult> Login([FromBody] LoginRequestDTO request)
+        {   
             if (string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.Password))
             {
                 return BadRequest(new { message = "Email and password are required." });
@@ -48,7 +49,7 @@ namespace TaskManagement.API.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterRequest request)
+        public async Task<IActionResult> Register([FromBody] RegisterRequestDTO request)
         {
             if (string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.Password))
             {

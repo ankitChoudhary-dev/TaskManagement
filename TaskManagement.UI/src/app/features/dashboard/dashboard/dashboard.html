@@ -1,1 +1,65 @@
-<p>dashboard works!</p>
+<div class="container mt-4">
+  <h2 class="mb-4">Dashboard Overview</h2>
+
+  <div *ngIf="stats" class="row g-3">
+    <!-- Total Projects -->
+    <div class="col-md-4">
+      <div class="card text-white bg-primary shadow-sm h-100">
+        <div class="card-body">
+          <h5 class="card-title">Total Projects</h5>
+          <h2 class="display-5 fw-bold">{{ stats.totalProjects }}</h2>
+        </div>
+      </div>
+    </div>
+
+    <!-- Total Tasks -->
+    <div class="col-md-4">
+      <div class="card text-white bg-dark shadow-sm h-100">
+        <div class="card-body">
+          <h5 class="card-title">Total Tasks</h5>
+          <h2 class="display-5 fw-bold">{{ stats.totalTasks }}</h2>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pending Tasks -->
+    <div class="col-md-4">
+      <div class="card text-white bg-warning shadow-sm h-100">
+        <div class="card-body">
+          <h5 class="card-title">Pending Tasks</h5>
+          <h2 class="display-5 fw-bold">{{ stats.pendingTasks }}</h2>
+        </div>
+      </div>
+    </div>
+
+    <!-- In Progress Tasks -->
+    <div class="col-md-4">
+      <div class="card text-white bg-info shadow-sm h-100">
+        <div class="card-body">
+          <h5 class="card-title">In Progress Tasks</h5>
+          <h2 class="display-5 fw-bold">{{ stats.inProgressTasks }}</h2>
+        </div>
+      </div>
+    </div>
+
+    <!-- Completed Tasks -->
+    <div class="col-md-4">
+      <div class="card text-white bg-success shadow-sm h-100">
+        <div class="card-body">
+          <h5 class="card-title">Completed Tasks</h5>
+          <h2 class="display-5 fw-bold">{{ stats.completedTasks }}</h2>
+        </div>
+      </div>
+    </div>
+
+    <!-- High Priority Tasks -->
+    <div class="col-md-4">
+      <div class="card text-white bg-danger shadow-sm h-100">
+        <div class="card-body">
+          <h5 class="card-title">High Priority Tasks</h5>
+          <h2 class="display-5 fw-bold">{{ stats.highPriorityTasks }}</h2>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,26 +1,27 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TaskManagement.API.Services.Interfaces;
 
 namespace TaskManagement.API.Controllers
 {
-    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class DashboardController : ControllerBase
     {
+        private readonly IDashboardService _dashboardService;
 
-        [HttpGet]
-        public ActionResult GetDashboard()
+        public DashboardController(IDashboardService dashboardService)
         {
-            return Ok(new
-            {
-                totalProjects = 0,
-                totalTasks = 0,
-                pendingTasks = 0,
-                inProgressTasks = 0,
-                completedTasks = 0
-            });
+            _dashboardService = dashboardService;
         }
 
+        
+        [HttpGet]
+        public async Task<IActionResult> GetStats()
+        {
+            var stats = await _dashboardService.GetDashboardStatsAsync();
+            return Ok(stats);
+        }
     }
 }

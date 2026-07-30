@@ -1,0 +1,125 @@
+<div class="container mt-4">
+  <div class="card shadow-sm">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+      <h3 class="h5 mb-0">Edit Project</h3>
+      <button type="button" class="btn btn-sm btn-outline-light" (click)="cancel()">
+        Back to Projects
+      </button>
+    </div>
+
+    <div class="card-body">
+
+      <!-- Dismissible Error Alert -->
+      @if (errorMessage) {
+        <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center justify-content-between" role="alert">
+          <div>
+            <strong>Access Denied:</strong> {{ errorMessage }}
+          </div>
+          <button 
+            type="button" 
+            class="btn-close" 
+            aria-label="Close" 
+            (click)="closeErrorMessage()">
+          </button>
+        </div>
+      }
+
+      @if (successMessage) {
+        <div class="alert alert-success" role="alert">
+          {{ successMessage }}
+        </div>
+      }
+
+      <form [formGroup]="projectForm" (ngSubmit)="submit()">
+
+        <!-- Project ID (Read-only) -->
+        <div class="mb-3">
+          <label class="form-label">Project ID</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            formControlName="id"
+            readonly>
+        </div>
+
+        <!-- Project Name -->
+        <div class="mb-3">
+          <label class="form-label">Project Name <span class="text-danger">*</span></label>
+          <input 
+            type="text" 
+            class="form-control" 
+            formControlName="name">
+
+          @if (
+            (isSubmitted || projectForm.get('name')?.touched) &&
+            projectForm.get('name')?.invalid
+          ) {
+            <div class="text-danger mt-1 small">
+              Project name is required.
+            </div>
+          }
+        </div>
+
+        <!-- Description -->
+        <div class="mb-3">
+          <label class="form-label">Description</label>
+          <textarea
+            class="form-control"
+            rows="3"
+            formControlName="description">
+          </textarea>
+        </div>
+
+        <!-- Status -->
+        <div class="mb-3">
+          <label class="form-label">Status <span class="text-danger">*</span></label>
+          <select class="form-select" formControlName="status">
+            <option value="Active">Active</option>
+            <option value="Inactive">Inactive</option>
+            <option value="Completed">Completed</option>
+          </select>
+        </div>
+
+        <!-- Start Date -->
+        <div class="mb-3">
+          <label class="form-label">Start Date</label>
+          <input
+            type="date"
+            class="form-control"
+            formControlName="startDate"
+            (change)="onStartDateChange()">
+        </div>
+
+        <!-- End Date -->
+        <div class="mb-3">
+          <label class="form-label">End Date</label>
+          <input
+            type="date"
+            class="form-control"
+            formControlName="endDate"
+            [min]="projectForm.get('startDate')?.value">
+
+          @if (
+            projectForm.hasError('dateRangeInvalid') &&
+            projectForm.get('endDate')?.touched
+          ) {
+            <div class="text-danger mt-1 small">
+              End date cannot be before start date.
+            </div>
+          }
+        </div>
+
+        <div class="d-flex gap-2 mt-4">
+          <button type="submit" class="btn btn-primary">
+            Update Project
+          </button>
+
+          <button type="button" class="btn btn-secondary" (click)="cancel()">
+            Cancel
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>

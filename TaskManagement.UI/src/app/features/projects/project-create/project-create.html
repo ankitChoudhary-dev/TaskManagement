@@ -1,0 +1,137 @@
+<div class="container mt-4">
+
+  <div class="card shadow-sm">
+
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+      <h3 class="h5 mb-0">Create Project</h3>
+      <button type="button" class="btn btn-sm btn-outline-light" (click)="cancel()">
+        Back to Projects
+      </button>
+    </div>
+
+    <div class="card-body">
+
+      <!-- Success Message Alert -->
+      @if (successMessage) {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+          <i class="bi bi-check-circle-fill me-2"></i>
+          {{ successMessage }}
+        </div>
+      }
+
+      <!-- 403 / General Error Message Alert at Top -->
+      @if (errorMessage) {
+        <div class="alert alert-danger d-flex align-items-center mb-4" role="alert">
+          <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:">
+            <use xlink:href="#exclamation-triangle-fill"/>
+          </svg>
+          <div>
+            <strong>Access Denied:</strong> {{ errorMessage }}
+          </div>
+        </div>
+      }
+
+      <!-- Form (Hidden if 403 Forbidden is active) -->
+      @if (isUnauthorized) {
+        <div class="text-center py-4">
+          <p class="text-muted">You do not have the required permissions to perform this action.</p>
+          <button class="btn btn-secondary" (click)="cancel()">
+            Return to Projects List
+          </button>
+        </div>
+      } @else {
+        <form [formGroup]="projectForm" (ngSubmit)="submit()">
+
+          <!-- Project Name -->
+          <div class="mb-3">
+            <label class="form-label">Project Name <span class="text-danger">*</span></label>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="name">
+
+            @if (
+              (isSubmitted || projectForm.get('name')?.touched) &&
+              projectForm.get('name')?.invalid
+            ) {
+              <div class="text-danger mt-1 small">
+                Project name is required.
+              </div>
+            }
+          </div>
+
+          <!-- Description -->
+          <div class="mb-3">
+            <label class="form-label">Description</label>
+            <textarea
+              class="form-control"
+              rows="3"
+              formControlName="description">
+            </textarea>
+          </div>
+
+          <!-- Status -->
+          <div class="mb-3">
+            <label class="form-label">Status <span class="text-danger">*</span></label>
+            <select
+              class="form-select"
+              formControlName="status">
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+              <option value="Completed">Completed</option>
+            </select>
+          </div>
+
+          <!-- Start Date -->
+          <div class="mb-3">
+            <label class="form-label">Start Date</label>
+            <input
+              type="date"
+              class="form-control"
+              formControlName="startDate"
+              (change)="onStartDateChange()">
+          </div>
+
+          <!-- End Date -->
+          <div class="mb-3">
+            <label class="form-label">End Date</label>
+            <input
+              type="date"
+              class="form-control"
+              formControlName="endDate"
+              [min]="projectForm.get('startDate')?.value">
+
+            @if (
+              projectForm.hasError('dateRangeInvalid') &&
+              projectForm.get('endDate')?.touched
+            ) {
+              <div class="text-danger mt-1 small">
+                End date cannot be before start date.
+              </div>
+            }
+          </div>
+
+          <!-- Buttons -->
+          <div class="d-flex gap-2 mt-4">
+            <button
+              type="submit"
+              class="btn btn-primary">
+              Save Project
+            </button>
+
+            <button
+              type="button"
+              class="btn btn-secondary"
+              (click)="cancel()">
+              Cancel
+            </button>
+          </div>
+
+        </form>
+      }
+
+    </div>
+
+  </div>
+
+</div>

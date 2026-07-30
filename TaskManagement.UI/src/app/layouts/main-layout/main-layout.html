@@ -1,34 +1,48 @@
 <div class="container-fluid">
   <div class="row">
 
-    <div class="col-md-2 bg-dark text-white min-vh-100 p-3">
-      <h4>Task Manager</h4>
+    <!-- Sidebar Column -->
+    <div class="col-md-2 bg-dark text-white min-vh-100 p-3 d-flex flex-column justify-content-between">
+      
+      <!-- Top Section: Title & Navigation Links -->
+      <div>
+        <h4>Task Manager</h4>
+        <hr class="border-secondary">
 
-      <hr>
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a routerLink="/dashboard" class="nav-link text-white">
+              Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a routerLink="/projects" class="nav-link text-white">
+              Projects
+            </a>
+          </li>
+          <li class="nav-item">
+            <a routerLink="/tasks" class="nav-link text-white">
+              Tasks
+            </a>
+          </li>
+        </ul>
+      </div>
 
-      <ul class="nav flex-column">
+      <!-- Bottom Section: User Profile & Logout -->
+      <div class="border-top border-secondary pt-3 mt-auto">
+        <div class="mb-2 px-2">
+          <small class="text-secondary d-block">Logged in as</small>
+          <strong class="text-white">{{ userName }}</strong>
+        </div>
+        
+        <button (click)="logout()" class="btn btn-outline-danger w-100 btn-sm text-start">
+          <i class="bi bi-box-arrow-right me-2"></i> Log Out
+        </button>
+      </div>
 
-        <li class="nav-item">
-          <a routerLink="/dashboard" class="nav-link text-white">
-            Dashboard
-          </a>
-        </li>
-
-        <li class="nav-item">
-          <a routerLink="/projects" class="nav-link text-white">
-            Projects
-          </a>
-        </li>
-
-        <li class="nav-item">
-          <a routerLink="/tasks" class="nav-link text-white">
-            Tasks
-          </a>
-        </li>
-
-      </ul>
     </div>
 
+    <!-- Main Content Area -->
     <div class="col-md-10 p-4">
       <router-outlet></router-outlet>
     </div>

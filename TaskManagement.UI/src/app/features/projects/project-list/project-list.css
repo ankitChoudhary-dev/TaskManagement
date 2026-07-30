@@ -1,0 +1,13 @@
+.sortable-header {
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.sortable-header:hover {
+  background-color: #343a40 !important;
+}
+
+.sort-icon {
+  font-size: 0.85rem;
+  margin-left: 6px;
+}

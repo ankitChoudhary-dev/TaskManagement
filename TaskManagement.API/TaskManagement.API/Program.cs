@@ -2,9 +2,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using TaskManagement.API;
+using TaskManagement.API.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
-
 
 builder.Services.AddCors(options =>
 {
@@ -17,12 +17,9 @@ builder.Services.AddCors(options =>
     });
 });
 
-
 builder.Services.AddControllers();
 
-
 builder.Services.AddApplicationServices(builder.Configuration);
-
 
 // JWT Authentication
 builder.Services
@@ -50,9 +47,7 @@ builder.Services
         };
     });
 
-
 builder.Services.AddAuthorization();
-
 
 builder.Services.AddEndpointsApiExplorer();
 
@@ -69,7 +64,6 @@ builder.Services.AddSwaggerGen(options =>
             In = Microsoft.OpenApi.Models.ParameterLocation.Header,
             Description = "Enter JWT token"
         });
-
 
     options.AddSecurityRequirement(
         new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
@@ -89,9 +83,10 @@ builder.Services.AddSwaggerGen(options =>
         });
 });
 
-
 var app = builder.Build();
 
+// Global Exception Handling Middleware (Placed at the top of pipeline)
+app.UseMiddleware<ExceptionMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {
@@ -99,22 +94,16 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-
 app.UseHttpsRedirection();
 
-
 app.UseCors("AngularPolicy");
-
 
 // Authentication middleware
 app.UseAuthentication();
 
-
 // Authorization middleware
 app.UseAuthorization();
 
-
 app.MapControllers();
-
 
 app.Run();

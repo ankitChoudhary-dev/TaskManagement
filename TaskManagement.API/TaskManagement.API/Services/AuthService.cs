@@ -1,4 +1,5 @@
 ﻿using TaskManagement.API.Models;
+using TaskManagement.API.DTOModels.Auth;
 using TaskManagement.API.Repositories.Interfaces;
 using TaskManagement.API.Services.Interfaces;
 
@@ -17,7 +18,7 @@ namespace TaskManagement.API.Services
             _tokenService = tokenService;
         }
 
-        public async Task<LoginResponse> Login(LoginRequest request)
+        public async Task<LoginResponseDTO> Login(LoginRequestDTO request)
         {
             try
             {
@@ -25,7 +26,7 @@ namespace TaskManagement.API.Services
 
                 if (user == null)
                 {
-                    return new LoginResponse
+                    return new LoginResponseDTO
                     {
                         IsSuccess = false,
                         Message = "Account not found. Please sign up to continue."
@@ -39,7 +40,7 @@ namespace TaskManagement.API.Services
 
                 if (!isPasswordValid)
                 {
-                    return new LoginResponse
+                    return new LoginResponseDTO
                     {
                         IsSuccess = false,
                         Message = "Invalid password"
@@ -53,8 +54,9 @@ namespace TaskManagement.API.Services
                     user.Role);
 
 
-                return new LoginResponse
+                return new LoginResponseDTO
                 {
+                    Name = user.Name,
                     IsSuccess = true,
                     Message = "Login successful",
                     Token = token,
@@ -68,7 +70,7 @@ namespace TaskManagement.API.Services
         }
 
 
-        public async Task<LoginResponse> Register(RegisterRequest request)
+        public async Task<LoginResponseDTO> Register(RegisterRequestDTO request)
         {
             try
             {
@@ -76,7 +78,7 @@ namespace TaskManagement.API.Services
 
                 if (existingUser != null)
                 {
-                    return new LoginResponse
+                    return new LoginResponseDTO
                     {
                         IsSuccess = false,
                         Message = "An account with this email already exists."
@@ -95,7 +97,7 @@ namespace TaskManagement.API.Services
                 });
 
 
-                return new LoginResponse
+                return new LoginResponseDTO
                 {
                     IsSuccess = true,
                     Message = "Registration successful"

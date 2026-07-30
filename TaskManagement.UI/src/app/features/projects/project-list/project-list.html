@@ -1,1 +1,171 @@
-<p>project-list works!</p>
+<div class="container mt-4">
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Projects</h2>
+
+    <button 
+      class="btn btn-primary"
+      routerLink="/projects/create">
+      + Create Project
+    </button>
+  </div>
+
+  <!-- Top Error Message Alert (403 Unauthorized or General Error) -->
+  @if (errorMessage) {
+    <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+      <strong>Access Denied:</strong> {{ errorMessage }}
+      <button type="button" class="btn-close" (click)="errorMessage = ''" aria-label="Close"></button>
+    </div>
+  }
+
+  @if (projects.length === 0) {
+    <div class="alert alert-info">
+      No projects found.
+    </div>
+  } @else {
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped align-middle">
+
+        <thead class="table-dark">
+          <tr class="user-select-none">
+
+            <!-- ID Column -->
+            <th width="90" class="sortable-header" (click)="onSort('id')">
+              <div class="d-flex align-items-center justify-content-between">
+                <span>ID</span>
+                <span class="sort-icon">
+                  @if (sortColumn === 'id') {
+                    {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                  } @else {
+                    <span class="text-white-50 opacity-50">↕</span>
+                  }
+                </span>
+              </div>
+            </th>
+
+            <!-- Name Column -->
+            <th class="sortable-header" (click)="onSort('name')">
+              <div class="d-flex align-items-center justify-content-between">
+                <span>Name</span>
+                <span class="sort-icon">
+                  @if (sortColumn === 'name') {
+                    {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                  } @else {
+                    <span class="text-white-50 opacity-50">↕</span>
+                  }
+                </span>
+              </div>
+            </th>
+
+            <!-- Description Column -->
+            <th class="sortable-header" (click)="onSort('description')">
+              <div class="d-flex align-items-center justify-content-between">
+                <span>Description</span>
+                <span class="sort-icon">
+                  @if (sortColumn === 'description') {
+                    {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                  } @else {
+                    <span class="text-white-50 opacity-50">↕</span>
+                  }
+                </span>
+              </div>
+            </th>
+
+            <!-- Status Column -->
+            <th class="sortable-header" (click)="onSort('status')">
+              <div class="d-flex align-items-center justify-content-between">
+                <span>Status</span>
+                <span class="sort-icon">
+                  @if (sortColumn === 'status') {
+                    {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                  } @else {
+                    <span class="text-white-50 opacity-50">↕</span>
+                  }
+                </span>
+              </div>
+            </th>
+
+            <!-- Start Date Column -->
+            <th class="sortable-header" (click)="onSort('startDate')">
+              <div class="d-flex align-items-center justify-content-between">
+                <span>Start Date</span>
+                <span class="sort-icon">
+                  @if (sortColumn === 'startDate') {
+                    {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                  } @else {
+                    <span class="text-white-50 opacity-50">↕</span>
+                  }
+                </span>
+              </div>
+            </th>
+
+            <!-- End Date Column -->
+            <th class="sortable-header" (click)="onSort('endDate')">
+              <div class="d-flex align-items-center justify-content-between">
+                <span>End Date</span>
+                <span class="sort-icon">
+                  @if (sortColumn === 'endDate') {
+                    {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                  } @else {
+                    <span class="text-white-50 opacity-50">↕</span>
+                  }
+                </span>
+              </div>
+            </th>
+
+            <!-- Created By Column -->
+            <th class="sortable-header" (click)="onSort('createdByName')">
+              <div class="d-flex align-items-center justify-content-between">
+                <span>Created By</span>
+                <span class="sort-icon">
+                  @if (sortColumn === 'createdByName') {
+                    {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                  } @else {
+                    <span class="text-white-50 opacity-50">↕</span>
+                  }
+                </span>
+              </div>
+            </th>
+
+            <!-- Action Column (Non-sortable) -->
+            <th width="150" class="text-center">Action</th>
+
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (project of projects; track project.id) {
+            <tr>
+              <td>{{ project.id }}</td>
+              <td>{{ project.name }}</td>
+              <td>{{ project.description || '-' }}</td>
+              <td>
+                <span class="badge" [ngClass]="getStatusClass(project.status)">
+                  {{ project.status }}
+                </span>
+              </td>
+              <td>{{ project.startDate ? (project.startDate | date:'dd-MM-yyyy') : '-' }}</td>
+              <td>{{ project.endDate ? (project.endDate | date:'dd-MM-yyyy') : '-' }}</td>
+              <td>{{ project.createdByName || '-' }}</td>
+              <td>
+                <button 
+                  class="btn btn-sm btn-warning me-2"
+                  [routerLink]="['/projects/edit', project.id]">
+                  Edit
+                </button>
+
+                <button 
+                  class="btn btn-sm btn-danger"
+                  (click)="deleteProject(project.id)">
+                  Delete
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+
+      </table>
+    </div>
+  }
+
+</div>
