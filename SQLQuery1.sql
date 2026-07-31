@@ -97,6 +97,31 @@ SET IDENTITY_INSERT Projects ON;
 INSERT INTO Projects (Id, Name, Description, StartDate, EndDate, Status, CreatedBy, CreatedOn)
 VALUES 
 (1, 'Employee Management System', 'Web application to manage employee records, departments, attendance, and payroll.', '2026-07-14 00:00:00.000', '2026-07-29 00:00:00.000', 'Inactive', 1, '2026-07-29 22:40:05.203'),
-(3, 'Hospital Management System', 'System for managing patients, appointments, doctors, billing, and medical records.', '2026-07-21 00:00:00.000', '2026-07-29 00:00:00.000', 'Inactive', 1, '2026-07-29 22:42:13.973');
+(2, 'Hospital Management System', 'System for managing patients, appointments, doctors, billing, and medical records.', '2026-07-21 00:00:00.000', '2026-07-29 00:00:00.000', 'Inactive', 1, '2026-07-29 22:42:13.973');
 SET IDENTITY_INSERT Projects OFF;
+GO
+
+-- =============================================
+-- SEED DATA FOR TASKS TABLE
+-- =============================================
+
+SET IDENTITY_INSERT Tasks ON;
+
+INSERT INTO Tasks (Id, ProjectId, Title, Description, Status, Priority, AssignedTo, DueDate, CreatedBy, CreatedOn)
+VALUES 
+(1, 1, 'Design Database Schema', 'Create SQL scripts for tables, constraints, and relationships for EMS.', 'Completed', 'High', 1, '2026-07-20 00:00:00.000', 1, '2026-07-29 22:45:00.000'),
+
+(2, 1, 'Implement JWT Authentication', 'Build auth endpoints for Login and Register with JWT token generation.', 'Completed', 'High', 2, '2026-07-25 00:00:00.000', 1, '2026-07-29 22:46:00.000'),
+
+(3, 1, 'Build Angular Task Module', 'Create reactive forms and task listing table with filter & search capabilities.', 'In Progress', 'High', 2, '2026-08-05 00:00:00.000', 1, '2026-07-29 22:48:00.000'),
+
+(4, 1, 'Unit Testing for API Services', 'Write xUnit tests for project and task service handlers.', 'Pending', 'Medium', 1, '2026-08-10 00:00:00.000', 1, '2026-07-29 22:50:00.000'),
+
+(5, 2, 'Patient Registration Module', 'Implement patient onboarding forms and validation.', 'In Progress', 'High', 1, '2026-08-02 00:00:00.000', 1, '2026-07-29 22:52:00.000'),
+
+(6, 2, 'Doctor Appointment Scheduling', 'Develop UI and API endpoints to manage doctor slot bookings.', 'Pending', 'Medium', 2, '2026-08-15 00:00:00.000', 1, '2026-07-29 22:55:00.000'),
+
+(7, 2, 'Medical Billing System', 'Integrate billing system for invoice generation upon checkout.', 'Pending', 'Low', NULL, '2026-08-20 00:00:00.000', 1, '2026-07-29 22:58:00.000');
+
+SET IDENTITY_INSERT Tasks OFF;
 GO

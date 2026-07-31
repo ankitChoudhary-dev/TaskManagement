@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace TaskManagement.API.DTOModels.Task
+﻿namespace TaskManagement.API.DTOModels.Task
 {
     /// <summary>
     /// Data transfer object containing parameters for updating an existing task's details.
@@ -10,8 +8,6 @@ namespace TaskManagement.API.DTOModels.Task
         /// <summary>
         /// Gets or sets the updated title of the task.
         /// </summary>
-        [Required(ErrorMessage = "Task Title is required.")]
-        [StringLength(150, MinimumLength = 3, ErrorMessage = "Title must be between 3 and 150 characters.")]
         public string Title { get; set; } = string.Empty;
 
         /// <summary>
@@ -22,13 +18,11 @@ namespace TaskManagement.API.DTOModels.Task
         /// <summary>
         /// Gets or sets the updated progress status of the task.
         /// </summary>
-        [Required(ErrorMessage = "Status is required.")]
         public string Status { get; set; } = "Pending";
 
         /// <summary>
         /// Gets or sets the updated priority level of the task.
         /// </summary>
-        [Required(ErrorMessage = "Priority is required.")]
         public string Priority { get; set; } = "Medium";
 
         /// <summary>
