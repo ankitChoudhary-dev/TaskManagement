@@ -1,4 +1,5 @@
-﻿using TaskManagement.API.DTOModels.Auth;
+﻿using AutoMapper;
+using TaskManagement.API.DTOModels.Auth;
 using TaskManagement.API.Models;
 using TaskManagement.API.Repositories.Interfaces;
 using TaskManagement.API.Services.Interfaces;
@@ -6,24 +7,28 @@ using TaskManagement.API.Services.Interfaces;
 namespace TaskManagement.API.Services
 {
     /// <summary>
-    /// Implements service logic for user authentication, registration, password validation, and JWT generation.
+    /// Implements service logic for user authentication, registration, password validation, and JWT generation using AutoMapper.
     /// </summary>
     public class AuthService : IAuthService
     {
         private readonly IAuthRepository _authRepository;
         private readonly ITokenService _tokenService;
+        private readonly IMapper _mapper;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AuthService"/> class.
         /// </summary>
         /// <param name="authRepository">The repository used for user persistence operations.</param>
         /// <param name="tokenService">The service used for generating JWT security tokens.</param>
+        /// <param name="mapper">The AutoMapper instance for object transformations.</param>
         public AuthService(
             IAuthRepository authRepository,
-            ITokenService tokenService)
+            ITokenService tokenService,
+            IMapper mapper)
         {
             _authRepository = authRepository;
             _tokenService = tokenService;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -64,14 +69,12 @@ namespace TaskManagement.API.Services
                     user.Email,
                     user.Role);
 
-                return new LoginResponseDTO
-                {
-                    Name = user.Name,
-                    IsSuccess = true,
-                    Message = "Login successful",
-                    Token = token,
-                    Role = user.Role
-                };
+                var response = _mapper.Map<LoginResponseDTO>(user);
+                response.IsSuccess = true;
+                response.Message = "Login successful";
+                response.Token = token;
+
+                return response;
             }
             catch (Exception)
             {
@@ -99,15 +102,13 @@ namespace TaskManagement.API.Services
                     };
                 }
 
-                var newUser = await _authRepository.CreateUser(new User
-                {
-                    Name = request.Name,
-                    Email = request.Email,
-                    PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
-                    Role = "User",
-                    IsActive = true,
-                    CreatedOn = DateTime.UtcNow
-                });
+                var newUserEntity = _mapper.Map<User>(request);
+                newUserEntity.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
+                newUserEntity.Role = "User";
+                newUserEntity.IsActive = true;
+                newUserEntity.CreatedOn = DateTime.UtcNow;
+
+                await _authRepository.CreateUser(newUserEntity);
 
                 return new LoginResponseDTO
                 {

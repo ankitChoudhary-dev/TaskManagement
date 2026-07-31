@@ -35,7 +35,7 @@ namespace TaskManagement.API.Controllers
                 var users = await _userService.GetAllUsersAsync();
                 return Ok(users);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return StatusCode(500, new
                 {

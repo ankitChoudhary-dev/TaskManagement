@@ -1,4 +1,4 @@
-﻿using TaskManagement.API.DTOModels;
+﻿using AutoMapper;
 using TaskManagement.API.DTOModels.Project;
 using TaskManagement.API.Models;
 using TaskManagement.API.Repositories.Interfaces;
@@ -7,19 +7,22 @@ using TaskManagement.API.Services.Interfaces;
 namespace TaskManagement.API.Services
 {
     /// <summary>
-    /// Implements service operations for managing project business logic, repository calls, and DTO mappings.
+    /// Implements service operations for managing project business logic, repository calls, and DTO mappings using AutoMapper.
     /// </summary>
     public class ProjectService : IProjectService
     {
         private readonly IProjectRepository _projectRepository;
+        private readonly IMapper _mapper;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ProjectService"/> class.
         /// </summary>
         /// <param name="projectRepository">The repository used for project persistence operations.</param>
-        public ProjectService(IProjectRepository projectRepository)
+        /// <param name="mapper">The AutoMapper instance for object transformations.</param>
+        public ProjectService(IProjectRepository projectRepository, IMapper mapper)
         {
             _projectRepository = projectRepository;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -32,9 +35,7 @@ namespace TaskManagement.API.Services
             {
                 var projects = await _projectRepository.GetAllProjects();
 
-                return projects
-                    .Select(MapToResponse)
-                    .ToList();
+                return _mapper.Map<List<ProjectResponseDTO>>(projects);
             }
             catch (Exception)
             {
@@ -58,7 +59,7 @@ namespace TaskManagement.API.Services
                     return null;
                 }
 
-                return MapToResponse(project);
+                return _mapper.Map<ProjectResponseDTO>(project);
             }
             catch (Exception)
             {
@@ -78,20 +79,13 @@ namespace TaskManagement.API.Services
         {
             try
             {
-                var project = new Project
-                {
-                    Name = request.Name,
-                    Description = request.Description,
-                    StartDate = request.StartDate,
-                    EndDate = request.EndDate,
-                    Status = request.Status,
-                    CreatedBy = createdBy,
-                    CreatedOn = DateTime.UtcNow
-                };
+                var project = _mapper.Map<Project>(request);
+                project.CreatedBy = createdBy;
+                project.CreatedOn = DateTime.UtcNow;
 
                 var createdProject = await _projectRepository.CreateProject(project);
 
-                return MapToResponse(createdProject);
+                return _mapper.Map<ProjectResponseDTO>(createdProject);
             }
             catch (Exception)
             {
@@ -118,15 +112,12 @@ namespace TaskManagement.API.Services
                     return null;
                 }
 
-                existingProject.Name = request.Name;
-                existingProject.Description = request.Description;
-                existingProject.StartDate = request.StartDate;
-                existingProject.EndDate = request.EndDate;
-                existingProject.Status = request.Status;
+                // Map incoming request properties directly onto the existing tracked entity
+                _mapper.Map(request, existingProject);
 
                 var updatedProject = await _projectRepository.UpdateProject(existingProject);
 
-                return MapToResponse(updatedProject);
+                return _mapper.Map<ProjectResponseDTO>(updatedProject);
             }
             catch (Exception)
             {
@@ -156,27 +147,6 @@ namespace TaskManagement.API.Services
             {
                 throw;
             }
-        }
-
-        /// <summary>
-        /// Maps a <see cref="Project"/> entity model to a <see cref="ProjectResponseDTO"/>.
-        /// </summary>
-        /// <param name="project">The project entity to transform.</param>
-        /// <returns>A mapped <see cref="ProjectResponseDTO"/> instance.</returns>
-        private ProjectResponseDTO MapToResponse(Project project)
-        {
-            return new ProjectResponseDTO
-            {
-                Id = project.Id,
-                Name = project.Name,
-                Description = project.Description,
-                StartDate = project.StartDate,
-                EndDate = project.EndDate,
-                Status = project.Status,
-                CreatedBy = project.CreatedBy,
-                CreatedByName = project.CreatedByUser?.Name ?? string.Empty,
-                CreatedOn = project.CreatedOn
-            };
         }
     }
 }
